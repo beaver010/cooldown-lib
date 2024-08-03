@@ -1,5 +1,6 @@
 package com.github.beaver010.cooldownlib;
 
+import com.google.common.base.Preconditions;
 import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataHolder;
 import org.bukkit.persistence.PersistentDataType;
@@ -111,6 +112,23 @@ public record Cooldown(NamespacedKey key) {
         Objects.requireNonNull(dataHolder, "PersistentDataHolder must not be null");
 
         if (isSet(dataHolder)) {
+            dataHolder.getPersistentDataContainer().remove(this.key);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Removes the cooldown from the specified {@link PersistentDataHolder} if it has expired.
+     *
+     * @param dataHolder The data holder to remove the cooldown from if it has expired.
+     * @return true if the cooldown was removed, false if the cooldown was not set or has not expired.
+     * @throws NullPointerException if the dataHolder is null.
+     */
+    public boolean removeIfExpired(final PersistentDataHolder dataHolder) {
+        Objects.requireNonNull(dataHolder, "PersistentDataHolder must not be null");
+
+        if (isExpired(dataHolder)) {
             dataHolder.getPersistentDataContainer().remove(this.key);
             return true;
         }
