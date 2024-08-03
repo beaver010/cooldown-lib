@@ -88,6 +88,19 @@ public record Cooldown(NamespacedKey key) {
     }
 
     /**
+     * Checks if the cooldown on the specified {@link PersistentDataHolder} is expired.
+     *
+     * @param dataHolder The data holder to check for an expired cooldown.
+     * @return true if the cooldown is expired or not set, false otherwise.
+     * @throws NullPointerException if the dataHolder is null.
+     */
+    public boolean isExpired(final PersistentDataHolder dataHolder) {
+        Objects.requireNonNull(dataHolder, "PersistentDataHolder must not be null");
+
+        return remainingTime(dataHolder).isZero();
+    }
+
+    /**
      * Removes the cooldown from the specified {@link PersistentDataHolder}.
      *
      * @param dataHolder The data holder to remove the cooldown from.
